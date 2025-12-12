@@ -1,6 +1,7 @@
 import React from 'react';
-import { Box, Flex, HStack, Text } from '@chakra-ui/react';
-import { Link, useLocation } from 'react-router-dom';
+import { Box, Flex, HStack, Text, Button } from '@chakra-ui/react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { authService } from '../services/auth_service';
 
 interface NavLinkProps {
   to: string;
@@ -33,6 +34,16 @@ const NavLink: React.FC<NavLinkProps> = ({ to, children }) => {
 };
 
 const Navbar: React.FC = () => {
+  const navigate = useNavigate();
+  const user = authService.getUser();
+
+  const handleLogout = () => {
+    authService.logout();
+    // Dispatch event to notify App.tsx of auth change
+    window.dispatchEvent(new StorageEvent('storage', { key: 'token' }));
+    navigate('/login');
+  };
+
   return (
     <Box
       bg="white"
@@ -54,11 +65,31 @@ const Navbar: React.FC = () => {
           GameClub
         </Text>
 
-        <HStack spacing={2}>
-          <NavLink to="/news">News</NavLink>
-          <NavLink to="/games">Games</NavLink>
-          <NavLink to="/teams">Teams</NavLink>
-          <NavLink to="/tournaments">Tournaments</NavLink>
+        <HStack spacing={8}>
+          <HStack spacing={2}>
+            <NavLink to="/news">News</NavLink>
+            <NavLink to="/games">Games</NavLink>
+            <NavLink to="/teams">Teams</NavLink>
+            <NavLink to="/tournaments">Tournaments</NavLink>
+          </HStack>
+
+          <HStack spacing={4}>
+            {user && (
+              <>
+                <Text fontSize="sm" color="gray.600">
+                  {user.first_name} {user.last_name}
+                </Text>
+                <Button
+                  size="sm"
+                  colorScheme="red"
+                  variant="outline"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </Button>
+              </>
+            )}
+          </HStack>
         </HStack>
       </Flex>
     </Box>
