@@ -13,6 +13,7 @@ import { NewsItem, NewsFormData } from '../../types';
 import { NewsModal } from '../../components/modals/news/NewsModal';
 import { DeleteConfirmDialog } from '../../components/dialogs/DeleteConfirmDialog';
 import NewsCard from '../../components/cards/NewsCard';
+import { authService } from '../../services/auth_service';
 
 const NewsPage: React.FC = () => {
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
@@ -59,12 +60,23 @@ const NewsPage: React.FC = () => {
     onDeleteDialogOpen();
   };
 
-  const handleSubmit = async (data: NewsFormData) => {
+  const handleSubmit = async (data: Omit<NewsFormData, 'authorId'>) => {
     try {
+      const user = authService.getUser();
+      if (!user) {
+        console.error('No user logged in');
+        return;
+      }
+
+      const newsData: NewsFormData = {
+        ...data,
+        authorId: user.id,
+      };
+
       if (selectedNews) {
-        await newsService.update(selectedNews.id, data);
+        await newsService.update(selectedNews.id, newsData);
       } else {
-        await newsService.create(data);
+        await newsService.create(newsData);
       }
       loadNews();
     } catch (error) {

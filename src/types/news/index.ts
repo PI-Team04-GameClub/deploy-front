@@ -9,4 +9,5 @@ export interface NewsItem {
 export interface NewsFormData {
   title: string;
   description: string;
+  authorId: number;
 }

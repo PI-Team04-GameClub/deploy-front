@@ -14,12 +14,12 @@ import {
   HStack,
   Button,
 } from '@chakra-ui/react';
-import { NewsItem, NewsFormData } from '../../../services/news_service';
+import { NewsItem } from '../../../types';
 
 interface NewsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: NewsFormData) => void;
+  onSubmit: (data: { title: string; description: string }) => void;
   news?: NewsItem;
 }
 
@@ -29,7 +29,7 @@ export const NewsModal: React.FC<NewsModalProps> = ({
   onSubmit,
   news,
 }) => {
-  const [formData, setFormData] = useState<NewsFormData>({
+  const [formData, setFormData] = useState({
     title: '',
     description: '',
   });
