@@ -69,9 +69,12 @@ const NewsPage: React.FC = () => {
 
   const handleSubmit = async (data: Omit<NewsFormData, 'authorId'>) => {
     try {
+      console.log('Submitting news data:', data);
       const user = authService.getUser();
+      console.log('Current user:', user);
       if (!user) {
         console.error('No user logged in');
+        alert('You must be logged in to create news');
         return;
       }
 
@@ -79,15 +82,20 @@ const NewsPage: React.FC = () => {
         ...data,
         authorId: user.id,
       };
+      console.log('News data with authorId:', newsData);
 
       if (selectedNews) {
         await newsService.update(selectedNews.id, newsData);
       } else {
         await newsService.create(newsData);
       }
+      console.log('News saved successfully, reloading');
       loadNews();
     } catch (error) {
       console.error('Error saving news:', error);
+      if (error instanceof Error) {
+        alert(`Error saving news: ${error.message}`);
+      }
     }
   };
 
