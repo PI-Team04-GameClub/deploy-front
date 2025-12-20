@@ -83,6 +83,7 @@ const NewsPage: React.FC = () => {
         authorId: user.id,
       };
       console.log('News data with authorId:', newsData);
+      console.log('JSON stringified:', JSON.stringify(newsData));
 
       if (selectedNews) {
         await newsService.update(selectedNews.id, newsData);

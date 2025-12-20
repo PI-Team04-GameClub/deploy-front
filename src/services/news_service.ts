@@ -31,6 +31,7 @@ export const newsService = {
         data: error.response?.data,
         message: error.message,
       });
+      console.error('Full error response:', JSON.stringify(error.response?.data, null, 2));
       throw error;
     }
   },
