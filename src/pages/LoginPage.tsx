@@ -61,14 +61,24 @@ const LoginPage: React.FC = () => {
       const response = await authService.login({ email, password });
       
       console.log('✅ Login response:', response);
+      console.log('Response keys:', Object.keys(response));
+      console.log('Response.id:', response.id);
+      console.log('Response.first_name:', response.first_name);
       
       authService.setToken(response.token);
-      authService.setUser({
+      console.log('✅ Token set in localStorage');
+      
+      const userData = {
         id: response.id,
         first_name: response.first_name,
         last_name: response.last_name,
         email: response.email,
-      });
+      };
+      console.log('User data to store:', userData);
+      
+      authService.setUser(userData);
+      console.log('✅ User set in localStorage');
+      console.log('localStorage user after setUser:', localStorage.getItem('user'));
 
       // Dispatch event to notify App.tsx of auth change
       window.dispatchEvent(new StorageEvent('storage', { key: 'token' }));
