@@ -14,6 +14,17 @@
   </head>
   <body>
     <div id="root"></div>
+    <script src="/config.js"></script>
+    <script>
+      // Set API URL from environment variable if available
+      if (typeof window !== 'undefined') {
+        const apiUrl = import.meta.env.VITE_API_URL;
+        if (apiUrl && !window.API_URL) {
+          window.API_URL = apiUrl;
+          console.log('API URL set from import.meta.env:', apiUrl);
+        }
+      }
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
