@@ -20,36 +20,13 @@ export const newsService = {
   },
 
   create: async (data: NewsFormData): Promise<NewsItem> => {
-    try {
-      console.log('API Request: POST', `${API_BASE_URL}/news`, data);
-      const response = await axios.post(`${API_BASE_URL}/news`, data);
-      console.log('API Response:', response.data);
-      return response.data;
-    } catch (error: any) {
-      console.error('API Error Details:', {
-        status: error.response?.status,
-        data: error.response?.data,
-        message: error.message,
-      });
-      console.error('Full error response:', JSON.stringify(error.response?.data, null, 2));
-      throw error;
-    }
+    const response = await axios.post(`${API_BASE_URL}/news`, data);
+    return response.data;
   },
 
   update: async (id: number, data: NewsFormData): Promise<NewsItem> => {
-    try {
-      console.log('API Request: PUT', `${API_BASE_URL}/news/${id}`, data);
-      const response = await axios.put(`${API_BASE_URL}/news/${id}`, data);
-      console.log('API Response:', response.data);
-      return response.data;
-    } catch (error: any) {
-      console.error('API Error Details:', {
-        status: error.response?.status,
-        data: error.response?.data,
-        message: error.message,
-      });
-      throw error;
-    }
+    const response = await axios.put(`${API_BASE_URL}/news/${id}`, data);
+    return response.data;
   },
 
   delete: async (id: number): Promise<void> => {

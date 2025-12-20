@@ -26,49 +26,16 @@ export const gameService = {
   },
 
   create: async (data: GameFormData): Promise<Game> => {
-    try {
-      console.log('API Request: POST', `${API_BASE_URL}/games`, data);
-      const response = await axios.post(`${API_BASE_URL}/games`, data);
-      console.log('API Response:', response.data);
-      return response.data;
-    } catch (error: any) {
-      console.error('API Error Details:', {
-        status: error.response?.status,
-        data: error.response?.data,
-        message: error.message,
-      });
-      throw error;
-    }
+    const response = await axios.post(`${API_BASE_URL}/games`, data);
+    return response.data;
   },
 
   update: async (id: number, data: GameFormData): Promise<Game> => {
-    try {
-      console.log('API Request: PUT', `${API_BASE_URL}/games/${id}`, data);
-      const response = await axios.put(`${API_BASE_URL}/games/${id}`, data);
-      console.log('API Response:', response.data);
-      return response.data;
-    } catch (error: any) {
-      console.error('API Error Details:', {
-        status: error.response?.status,
-        data: error.response?.data,
-        message: error.message,
-      });
-      throw error;
-    }
+    const response = await axios.put(`${API_BASE_URL}/games/${id}`, data);
+    return response.data;
   },
 
   delete: async (id: number): Promise<void> => {
-    try {
-      console.log('API Request: DELETE', `${API_BASE_URL}/games/${id}`);
-      await axios.delete(`${API_BASE_URL}/games/${id}`);
-      console.log('Delete successful');
-    } catch (error: any) {
-      console.error('API Error Details:', {
-        status: error.response?.status,
-        data: error.response?.data,
-        message: error.message,
-      });
-      throw error;
-    }
+    await axios.delete(`${API_BASE_URL}/games/${id}`);
   },
 };
