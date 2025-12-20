@@ -65,14 +65,21 @@ const GamesPage: React.FC = () => {
 
   const handleSubmit = async (data: GameFormData) => {
     try {
+      console.log('Submitting game data:', data);
       if (selectedGame) {
+        console.log('Updating game:', selectedGame.id);
         await gameService.update(selectedGame.id, data);
       } else {
+        console.log('Creating new game');
         await gameService.create(data);
       }
-      loadGames();
+      console.log('Game saved successfully, reloading games list');
+      await loadGames();
     } catch (error) {
       console.error('Error saving game:', error);
+      if (error instanceof Error) {
+        alert(`Error saving game: ${error.message}`);
+      }
     }
   };
 
