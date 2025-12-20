@@ -1,5 +1,6 @@
 [build]
 builder = "dockerfile"
+buildArgs = ["VITE_API_URL"]
 
 [deploy]
 startCommand = "serve -s dist -l 3001"
