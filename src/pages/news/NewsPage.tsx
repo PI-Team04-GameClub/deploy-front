@@ -39,9 +39,16 @@ const NewsPage: React.FC = () => {
   const loadNews = async () => {
     try {
       const data = await newsService.getAll();
-      setNewsItems(data);
+      // Ensure data is an array
+      if (Array.isArray(data)) {
+        setNewsItems(data);
+      } else {
+        console.error('News data is not an array:', data);
+        setNewsItems([]);
+      }
     } catch (error) {
       console.error('Error loading news:', error);
+      setNewsItems([]);
     }
   };
 

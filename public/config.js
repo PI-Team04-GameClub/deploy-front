@@ -1,14 +1,14 @@
-// Dynamic configuration loader
+// Dynamic configuration loader - runs at page load time
 (function() {
-  // Try to get API URL from environment variable
-  const apiUrl = '%VITE_API_URL%' !== '%VITE_API_URL%' ? '%VITE_API_URL%' : null;
-  
-  if (apiUrl && apiUrl !== '%VITE_API_URL%') {
-    window.API_URL = apiUrl;
-    console.log('API URL configured to:', apiUrl);
-  } else {
-    // Fallback: use same origin or localhost
-    window.API_URL = window.location.origin + '/api' || 'http://localhost:3000/api';
-    console.log('Using fallback API URL:', window.API_URL);
+  // Get API URL from meta tag or data attribute set by server
+  const metaTag = document.querySelector('meta[name="api-url"]');
+  if (metaTag && metaTag.getAttribute('content')) {
+    window.API_URL = metaTag.getAttribute('content');
+    console.log('API URL from meta tag:', window.API_URL);
+    return;
   }
+  
+  // Fallback: use relative path to backend
+  window.API_URL = window.location.origin + '/api';
+  console.log('Using origin-based API URL:', window.API_URL);
 })();
