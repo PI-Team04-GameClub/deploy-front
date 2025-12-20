@@ -70,10 +70,15 @@ const NewsPage: React.FC = () => {
   const handleSubmit = async (data: Omit<NewsFormData, 'authorId'>) => {
     try {
       console.log('Submitting news data:', data);
+      console.log('localStorage user:', localStorage.getItem('user'));
+      console.log('localStorage token:', localStorage.getItem('token'));
+      
       const user = authService.getUser();
       console.log('Current user:', user);
-      if (!user) {
-        console.error('No user logged in');
+      console.log('User ID:', user?.id);
+      
+      if (!user || !user.id) {
+        console.error('No user logged in or user.id is missing');
         alert('You must be logged in to create news');
         return;
       }
