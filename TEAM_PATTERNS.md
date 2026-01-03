@@ -33,13 +33,13 @@ Svaki član tima mora implementirati **3 paterna iz različitih kategorija**:
   - `getLogs()` - Dohvaća sve logove
   - `exportLogs()` - Izvozni logove kao JSON
 
-#### 2. ✅ **Decorator Pattern** (STRUCTURAL)
-- 📁 File: `src/services/http_service.ts`
-- 📝 Opis: HTTP servis sa 3 dekoratora
-- 🎯 Dekoratori:
-  - `LoggingDecorator` - Logira sve zahtjeve i odgovore
-  - `TimingDecorator` - Mjeri vrijeme izvršavanja
-  - `RetryDecorator` - Implementira retry mehanizam (3 pokušaja)
+#### 2. ✅ **Adapter Pattern** (STRUCTURAL)
+- 📁 File: `src/services/api_adapter.ts`
+- 📝 Opis: API adapter za kompatibilnost nekompatibilnih sučelja
+- 🎯 Adapteri:
+  - `LegacyGameAdapter` - Pretvara legacy igre u novi format
+  - `OldAPIAdapter` - Čini stariji API kompatibilnim
+  - `DataFormatAdapter` - CSV ↔ JSON konverzija
 
 #### 3. ✅ **Observer Pattern** (BEHAVIORAL)
 - 📁 File: `src/services/event_manager.ts`
@@ -63,12 +63,12 @@ logger.error("Greška");
 logger.warn("Upozorenje");
 ```
 
-### HTTP Servis (Decorator):
+### Adapter (Structural):
 ```typescript
-import { createHttpService } from "../services/http_service";
+import { LegacyGameAdapter } from "../services/api_adapter";
 
-const api = createHttpService("https://api.example.com");
-const data = await api.get<User>("/users/1");
+const adapter = new LegacyGameAdapter();
+const modernGame = adapter.adaptGame(legacyGame);
 ```
 
 ### Event Manager (Observer):

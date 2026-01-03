@@ -3,13 +3,20 @@
  * 
  * Paterna koji se koriste:
  * 1. SINGLETON - Logger (jedna instanca za sve logove)
- * 2. DECORATOR - HTTP servis (logiranje, timing, retry)
+ * 2. ADAPTER - API adapter (kompatibilnost sučelja)
  * 3. OBSERVER - Event Manager (obavještavanje o događajima)
  */
 
 import React, { useEffect, useState } from "react";
 import logger from "../services/logger";
-import { createHttpService } from "../services/http_service";
+import {
+  LegacyGameAdapter,
+  OldAPIAdapter,
+  DataFormatAdapter,
+  type GameData,
+  type LegacyGameData,
+  type OldAPIClient,
+} from "../services/api_adapter";
 import eventManager, {
   EventType,
   NotificationObserver,
@@ -77,29 +84,44 @@ const DesignPatternsDemo: React.FC = () => {
     });
   };
 
-  // Demo 2: Decorator HTTP Servis
-  const handleDecoratorDemo = async () => {
-    logger.info("Demo 2: DECORATOR PATTERN - HTTP Servis");
+  // Demo 2: Adapter - Kompatibilnost sučelja
+  const handleAdapterDemo = () => {
+    logger.info("Demo 2: ADAPTER PATTERN - API kompatibilnost");
 
     try {
-      // Napravlja HTTP servis sa svim decoratorima
-      const httpService = createHttpService("https://jsonplaceholder.typicode.com");
+      // Primjer 1: Legacy game adapter
+      const legacyGame: LegacyGameData = {
+        game_id: 1,
+        game_name: "Counter-Strike 2",
+        player_list: [
+          { player_id: 101, player_name: "Igrač 1", player_score: 1500 },
+          { player_id: 102, player_name: "Igrač 2", player_score: 1200 },
+        ],
+        is_active: true,
+        creation_date: "2026-01-03",
+      };
 
-      // Ovo će biti logano, mjereno vrijeme i retry mehanizam
-      logger.info("Pozivam GET zahtjev...");
-      const data = await httpService.get<any>("/posts/1");
+      logger.info("Primjer 1: Adaptiranje legacy igre");
+      const adapter = new LegacyGameAdapter();
+      const modernGame = adapter.adaptGame(legacyGame);
+      logger.info(`Adaptirana igra: ${JSON.stringify(modernGame)}`);
 
-      logger.info(`Primljen odgovor: ${JSON.stringify(data).substring(0, 100)}...`);
+      // Primjer 2: CSV adapter
+      logger.info("Primjer 2: CSV adapter");
+      const csvData = "id,title,status,createdAt\n2,League of Legends,active,2026-01-03";
+      const jsonGames = DataFormatAdapter.csvToJson(csvData);
+      logger.info(`CSV konvertovan u JSON: ${JSON.stringify(jsonGames)}`);
+
       updateLogs();
 
       toast({
-        title: "Decorator Demo",
-        description: "GET zahtjev uspješan - pogledaj logove",
+        title: "Adapter Demo",
+        description: "Kompatibilnost sučelja uspješna - pogledaj logove",
         status: "success",
         duration: 3000,
       });
     } catch (error) {
-      logger.error(`Decorator demo error: ${error}`);
+      logger.error(`Adapter demo error: ${error}`);
       toast({
         title: "Greška",
         description: "Pogledaj logove za više informacija",
@@ -156,8 +178,8 @@ const DesignPatternsDemo: React.FC = () => {
           <Button colorScheme="blue" onClick={handleLoggerDemo} size="lg">
             1️⃣ Singleton - Logger
           </Button>
-          <Button colorScheme="green" onClick={handleDecoratorDemo} size="lg">
-            2️⃣ Decorator - HTTP
+          <Button colorScheme="green" onClick={handleAdapterDemo} size="lg">
+            2️⃣ Adapter - API
           </Button>
           <Button colorScheme="purple" onClick={handleObserverDemo} size="lg">
             3️⃣ Observer - Events
@@ -231,8 +253,7 @@ const DesignPatternsDemo: React.FC = () => {
               <strong>Singleton:</strong> Logger.getInstance() vraća istu instancu svaki put
             </Text>
             <Text>
-              <strong>Decorator:</strong> HTTP servis se dekorira sa LoggingDecorator,
-              TimingDecorator i RetryDecorator
+              <strong>Adapter:</strong> Čini nekompatibilna sučelja kompatibilnima (legacy API)
             </Text>
             <Text>
               <strong>Observer:</strong> EventManager notificira sve registrirane observere

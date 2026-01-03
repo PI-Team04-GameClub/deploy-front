@@ -5,7 +5,7 @@ Ovo je dokumentacija implementacije tri design paterna za GameClub frontend apli
 ## 📋 Sadržaj
 
 1. [Singleton Pattern (Creational)](#singleton-pattern)
-2. [Decorator Pattern (Structural)](#decorator-pattern)
+2. [Adapter Pattern (Structural)](#adapter-pattern)
 3. [Observer Pattern (Behavioral)](#observer-pattern)
 4. [Kako Koristiti](#kako-koristiti)
 
@@ -60,89 +60,72 @@ logger.warn("Ovo je upozorenje");
 
 ---
 
-## Decorator Pattern
+## Adapter Pattern
 
-### 📁 Datoteka: `src/services/http_service.ts`
+### 📁 Datoteka: `src/services/api_adapter.ts`
 
-**Što je Decorator?**
-- Dinamički **dodaje nove funkcionalnosti** objektu u runtime-u
-- Ne mijenja originalni objekt
-- Alternativa nasljeđivanju
+**Što je Adapter?**
+- Omogućava suradnju **nekompatibilnih sučelja**
+- Čini stari kod (legacy) kompatibilnim s novim
+- "Prijevod" između različitih API-ja
 
 ### Primjena u kodu:
 
-Bazna klasa:
+**Staro sučelje (Legacy):**
 ```typescript
-class BasicHttpService implements HttpService {
-  async get<T>(url: string): Promise<T> {
-    return axios.get(url).then(res => res.data);
-  }
+interface LegacyGameData {
+  game_id: number;
+  game_name: string;
+  player_list: LegacyPlayer[];
+  is_active: boolean;
 }
 ```
 
-**Decorator 1 - LoggingDecorator:**
+**Novo sučelje:**
 ```typescript
-class LoggingDecorator implements HttpService {
-  constructor(private httpService: HttpService) {}
-  
-  async get<T>(url: string): Promise<T> {
-    logger.info(`GET: ${url}`);
-    const result = await this.httpService.get<T>(url);
-    logger.info(`GET završen: ${url}`);
-    return result;
-  }
+interface GameData {
+  id: number;
+  title: string;
+  players: Player[];
+  status: "active" | "inactive";
 }
 ```
 
-**Decorator 2 - TimingDecorator:**
+**Adapter - "Prijevod":**
 ```typescript
-class TimingDecorator implements HttpService {
-  // Mjeri vrijeme izvršavanja
-  async get<T>(url: string): Promise<T> {
-    const start = performance.now();
-    const result = await this.httpService.get<T>(url);
-    const duration = performance.now() - start;
-    logger.debug(`Vrijeme: ${duration}ms`);
-    return result;
+class LegacyGameAdapter {
+  adaptGame(legacyGame: LegacyGameData): GameData {
+    return {
+      id: legacyGame.game_id,
+      title: legacyGame.game_name,
+      players: legacyGame.player_list.map(...),
+      status: legacyGame.is_active ? "active" : "inactive"
+    };
   }
 }
+
+// Korištenje:
+const adapter = new LegacyGameAdapter();
+const modernGame = adapter.adaptGame(legacyGame);
 ```
 
-**Decorator 3 - RetryDecorator:**
-```typescript
-class RetryDecorator implements HttpService {
-  // Pokušava ponovno ako zahtjev ne uspije
-  async get<T>(url: string): Promise<T> {
-    for (let attempt = 1; attempt <= 3; attempt++) {
-      try {
-        return await this.httpService.get<T>(url);
-      } catch (error) {
-        if (attempt === 3) throw error;
-        await new Promise(r => setTimeout(r, 1000 * attempt));
-      }
-    }
-  }
-}
-```
+### Implementirani Adapteri:
 
-### Stacking Decoratora:
-```typescript
-const httpService = createHttpService("https://api.example.com");
-// Result: BasicHttpService → LoggingDecorator → TimingDecorator → RetryDecorator
-```
+1. **LegacyGameAdapter** - Pretvara legacy igre u novi format
+2. **OldAPIAdapter** - Čini stariji API kompatibilnim
+3. **DataFormatAdapter** - CSV ↔ JSON konverzija
 
 ### Prednosti:
-- ✅ Fleksibilna funkcionalnost
-- ✅ Dinamička kombinacija ponašanja
-- ✅ Čist kod bez dugačkog naslijeđa
-- ✅ Single Responsibility Principle
+- ✅ Integacija legacy koda
+- ✅ Korištenje vanjskih biblioteka
+- ✅ Kompatibilnost nekompatibilnih sučelja
+- ✅ Ne trebaju izmjene originalnog koda
 
 ### Kada koristiti:
-- 🎯 Logiranje HTTP zahtjeva
-- 🎯 Mjerenje performansi
-- 🎯 Retry mehanizmi
-- 🎯 Caching
-- 🎯 Validacija
+- 🎯 Integracija starog koda
+- 🎯 External biblioteke
+- 🎯 Format konverzije
+- 🎯 API kompatibilnost
 
 ---
 
@@ -263,16 +246,20 @@ const MyComponent: React.FC = () => {
 };
 ```
 
-### 2. Kreiranja API zahtjeva s decoratorima:
+### 2. Kreiranja API zahtjeva s adapterima:
 
 ```typescript
-import { createHttpService } from "../services/http_service";
+import { LegacyGameAdapter } from "../services/api_adapter";
 
-const api = createHttpService("https://api.gameclub.com");
+// Stari podaci iz legacy sustava
+const legacyGame = { game_id: 1, game_name: "CS2", ... };
 
-// Automatski će biti: logano, mjereno vrijeme, i retry
-const users = await api.get<User[]>("/users");
-const game = await api.post<Game>("/games", gameData);
+// Adapter ih čini kompatibilnima
+const adapter = new LegacyGameAdapter();
+const modernGame = adapter.adaptGame(legacyGame);
+
+// Sada možeš koristiti u aplikaciji
+console.log(modernGame.title); // CS2
 ```
 
 ### 3. Demo komponenta:
@@ -287,10 +274,10 @@ EventManager je **Singleton** što znači:
 - Samo jedna instanca u cijeloj aplikaciji
 - Globalni pristup za emitiranje i pretplatu na događaje
 
-HTTP Servis koristi **Decorator** što znači:
-- Logiranje zahtjeva (LoggingDecorator)
-- Mjerenje vremena (TimingDecorator)
-- Retry mehanizam (RetryDecorator)
+API Adapter koristi **Adapter** što znači:
+- Prijevod između nekompatibilnih sučelja
+- Legacy kod postaje kompatibilan s novim
+- Format konverzije (CSV ↔ JSON)
 
 Sustav Event-a koristi **Observer** što znači:
 - Komponente se registriraju da budu obaviještene
@@ -314,7 +301,7 @@ Sustav Event-a koristi **Observer** što znači:
 | Pattern | Uloga | Primjer |
 |---------|-------|---------|
 | **Singleton** | Jedna instanca | Logger, Config, EventManager |
-| **Decorator** | Dodaje funkcionalnost | HTTP Logging, Retry, Caching |
+| **Adapter** | Kompatibilnost sučelja | Legacy API, Format konverzija |
 | **Observer** | Obavještava o promjenama | Events, Notifications |
 
 ---
@@ -322,7 +309,7 @@ Sustav Event-a koristi **Observer** što znači:
 ## ✅ Checklist za Implementaciju
 
 - [x] Singleton Pattern - Logger servis
-- [x] Decorator Pattern - HTTP servis sa 3 decoratora
+- [x] Adapter Pattern - API adapter za kompatibilnost
 - [x] Observer Pattern - Event Manager sa više observera
 - [x] Demo komponenta
 - [x] Dokumentacija
