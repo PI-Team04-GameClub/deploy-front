@@ -82,24 +82,24 @@ const LoginPage: React.FC = () => {
 
   return (
     <Container maxW="md" py={{ base: '12', md: '24' }}>
-      <VStack spacing="8">
-        <Box textAlign="center">
-          <Heading mb="2" fontWeight="800">GameClub</Heading>
-          <Text color="gray.600">
-            Sign in to your account
-          </Text>
-        </Box>
+      <Box
+        width="full"
+        bg="white"
+        borderRadius="xl"
+        boxShadow="sm"
+        border="1px solid"
+        borderColor="gray.100"
+        p={8}
+      >
+        <VStack spacing="6">
+          <Box textAlign="center">
+            <Heading mb="2" fontWeight="800">GameClub</Heading>
+            <Text color="gray.600">
+              Sign in to your account
+            </Text>
+          </Box>
 
-        <Box
-          width="full"
-          bg="white"
-          borderRadius="xl"
-          boxShadow="sm"
-          border="1px solid"
-          borderColor="gray.100"
-          p={8}
-        >
-          <VStack spacing="4">
+          <VStack spacing="4" width="full">
             <Input
               placeholder="Email"
               type="email"
@@ -121,23 +121,23 @@ const LoginPage: React.FC = () => {
               Sign In
             </SubmitButton>
           </VStack>
-        </Box>
 
-        <HStack justify="center" width="full">
-          <Text fontSize="sm" color="gray.600">
-            Don't have an account?
-          </Text>
-          <Button
-            as={Link}
-            to="/register"
-            variant="link"
-            colorScheme="brand"
-            fontSize="sm"
-          >
-            Create account
-          </Button>
-        </HStack>
-      </VStack>
+          <HStack justify="center" width="full">
+            <Text fontSize="sm" color="gray.600">
+              Don't have an account?
+            </Text>
+            <Button
+              as={Link}
+              to="/register"
+              variant="link"
+              colorScheme="brand"
+              fontSize="sm"
+            >
+              Create account
+            </Button>
+          </HStack>
+        </VStack>
+      </Box>
 
       <AlertDialog
         isOpen={isErrorOpen}

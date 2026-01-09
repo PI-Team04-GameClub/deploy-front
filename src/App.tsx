@@ -15,7 +15,32 @@ const AppContent: React.FC = () => {
   const { isAuthenticated } = useAuth();
 
   return (
-    <Box>
+    <Box position="relative" minH="100vh">
+      {/* Blurry background */}
+      <Box
+        position="fixed"
+        top={0}
+        left={0}
+        right={0}
+        bottom={0}
+        backgroundImage="url('/assets/board_games_background.jpg')"
+        backgroundSize="cover"
+        backgroundPosition="center"
+        backgroundRepeat="no-repeat"
+        filter="blur(8px)"
+        transform="scale(1.1)"
+        zIndex={-1}
+      />
+      {/* White overlay for subtle background */}
+      <Box
+        position="fixed"
+        top={0}
+        left={0}
+        right={0}
+        bottom={0}
+        bg="whiteAlpha.700"
+        zIndex={-1}
+      />
       {isAuthenticated && <Navbar />}
       <Box minH={isAuthenticated ? 'calc(100vh - 73px)' : '100vh'}>
         <Routes>

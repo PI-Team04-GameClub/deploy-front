@@ -18,7 +18,11 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 }) => {
   return (
     <HStack justify="space-between" mb={6}>
-      <Heading size={headingSize} fontWeight="800">
+      <Heading
+        size={headingSize}
+        fontWeight="800"
+        color="white"
+      >
         {title}
       </Heading>
       {actionLabel && onAction && (
