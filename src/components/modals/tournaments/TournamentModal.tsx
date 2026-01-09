@@ -14,8 +14,8 @@ import {
   HStack,
   Button,
 } from '@chakra-ui/react';
-import { Tournament, TournamentFormData } from '../../../services/tournament_service';
-import { gameService, Game } from '../../../services/game_service';
+import { Tournament, TournamentFormData, Game } from '../../../types';
+import { gameService } from '../../../services/game_service';
 
 interface TournamentModalProps {
   isOpen: boolean;
@@ -34,6 +34,7 @@ export const TournamentModal: React.FC<TournamentModalProps> = ({
   const [formData, setFormData] = useState<TournamentFormData>({
     name: '',
     gameId: 0,
+    players: 0,
     prizePool: 0,
     startDate: '',
   });
@@ -50,6 +51,7 @@ export const TournamentModal: React.FC<TournamentModalProps> = ({
       setFormData({
         name: tournament.name,
         gameId: game?.id || 0,
+        players: tournament.players,
         prizePool: tournament.prizePool,
         startDate: dateOnly,
       });
@@ -57,6 +59,7 @@ export const TournamentModal: React.FC<TournamentModalProps> = ({
       setFormData({
         name: '',
         gameId: 0,
+        players: 0,
         prizePool: 0,
         startDate: '',
       });

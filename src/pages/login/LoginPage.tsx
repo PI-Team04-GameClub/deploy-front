@@ -9,9 +9,6 @@ import {
   Text,
   Heading,
   useToast,
-  InputGroup,
-  InputRightElement,
-  Spinner,
   useDisclosure,
   AlertDialog,
   AlertDialogBody,
@@ -22,11 +19,12 @@ import {
 } from '@chakra-ui/react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../../services/auth_service';
+import { PasswordInput } from '../../components/inputs';
+import { SubmitButton } from '../../components/buttons';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const toast = useToast();
@@ -120,35 +118,17 @@ const LoginPage: React.FC = () => {
               autoComplete="email"
             />
 
-            <InputGroup>
-              <Input
-                placeholder="Password"
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onKeyPress={handleKeyPress}
-                autoComplete="current-password"
-              />
-              <InputRightElement width="4.5rem">
-                <Button
-                  h="1.75rem"
-                  size="sm"
-                  onClick={() => setShowPassword(!showPassword)}
-                  variant="ghost"
-                >
-                  {showPassword ? 'Hide' : 'Show'}
-                </Button>
-              </InputRightElement>
-            </InputGroup>
+            <PasswordInput
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyPress={handleKeyPress}
+              autoComplete="current-password"
+            />
 
-            <Button
-              width="full"
-              colorScheme="brand"
-              onClick={handleLogin}
-              isDisabled={loading}
-            >
-              {loading ? <Spinner size="sm" /> : 'Sign In'}
-            </Button>
+            <SubmitButton loading={loading} onClick={handleLogin}>
+              Sign In
+            </SubmitButton>
           </VStack>
         </Box>
 

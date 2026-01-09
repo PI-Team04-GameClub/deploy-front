@@ -13,7 +13,7 @@ import {
   HStack,
   Button,
 } from '@chakra-ui/react';
-import { Team, TeamFormData } from '../../../services/team_service';
+import { Team, TeamFormData } from '../../../types';
 
 interface TeamModalProps {
   isOpen: boolean;

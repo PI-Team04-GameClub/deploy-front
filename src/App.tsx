@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ChakraProvider, Box } from '@chakra-ui/react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import theme from './styles/theme';
-import Navbar from './components/Navbar';
+import Navbar from './components/navbars/Navbar';
 import LoginPage from './pages/login/LoginPage';
 import RegisterPage from './pages/register/RegisterPage';
 import GamesPage from './pages/games/GamesPage';

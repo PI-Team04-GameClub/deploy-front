@@ -2,10 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   Box,
   Container,
-  Heading,
-  Button,
   SimpleGrid,
-  HStack,
   useDisclosure,
 } from '@chakra-ui/react';
 import { newsService } from '../../services/news_service';
@@ -14,6 +11,7 @@ import { NewsModal } from '../../components/modals/news/NewsModal';
 import { DeleteConfirmDialog } from '../../components/dialogs/DeleteConfirmDialog';
 import NewsCard from '../../components/cards/NewsCard';
 import { authService } from '../../services/auth_service';
+import { PageHeader } from '../../components/layouts';
 
 const NewsPage: React.FC = () => {
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
@@ -98,17 +96,11 @@ const NewsPage: React.FC = () => {
   return (
     <Container maxW="container.xl" py={8}>
       <Box mb={6}>
-        <HStack justify="space-between" mb={6}>
-          <Heading size="xl" fontWeight="800">
-            News & Updates
-          </Heading>
-          <Button
-            colorScheme="brand"
-            onClick={handleCreate}
-          >
-            Create Post
-          </Button>
-        </HStack>
+        <PageHeader
+          title="News & Updates"
+          actionLabel="Create Post"
+          onAction={handleCreate}
+        />
 
         <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
           {newsItems.map((news) => (

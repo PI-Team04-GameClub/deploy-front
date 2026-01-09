@@ -10,10 +10,9 @@ import {
   Th,
   Td,
   Badge,
-  HStack,
-  Button,
 } from '@chakra-ui/react';
-import { Tournament } from '../../types/tournaments';
+import { Tournament } from '../../../types';
+import { ActionButtons } from '../../buttons';
 
 interface TournamentsTableProps {
   tournaments: Tournament[];
@@ -21,10 +20,10 @@ interface TournamentsTableProps {
   onDelete: (id: number) => void;
 }
 
-const TournamentsTable: React.FC<TournamentsTableProps> = ({ 
-  tournaments, 
-  onEdit, 
-  onDelete 
+const TournamentsTable: React.FC<TournamentsTableProps> = ({
+  tournaments,
+  onEdit,
+  onDelete
 }) => {
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -70,24 +69,10 @@ const TournamentsTable: React.FC<TournamentsTableProps> = ({
                     </Badge>
                   </Td>
                   <Td>
-                    <HStack spacing={2} justify="flex-end">
-                      <Button
-                        size="sm"
-                        colorScheme="blue"
-                        variant="ghost"
-                        onClick={() => onEdit(tournament)}
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        size="sm"
-                        colorScheme="red"
-                        variant="ghost"
-                        onClick={() => onDelete(tournament.id)}
-                      >
-                        Delete
-                      </Button>
-                    </HStack>
+                    <ActionButtons
+                      onEdit={() => onEdit(tournament)}
+                      onDelete={() => onDelete(tournament.id)}
+                    />
                   </Td>
                 </Tr>
               ))}

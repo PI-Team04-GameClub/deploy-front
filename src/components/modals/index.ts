@@ -1,3 +1,4 @@
-export { default as CreateTournamentModal } from './CreateTournamentModal';
-export { default as CreateNewsModal } from './CreateNewsModal';
-export { default as AddMemberModal } from './AddMemberModal';
+export { GameModal } from './games/GameModal';
+export { TeamModal } from './teams/TeamModal';
+export { TournamentModal } from './tournaments/TournamentModal';
+export { NewsModal } from './news/NewsModal';

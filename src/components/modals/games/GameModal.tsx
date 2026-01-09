@@ -16,7 +16,7 @@ import {
   HStack,
   Button,
 } from '@chakra-ui/react';
-import { Game, GameFormData } from '../../../services/game_service';
+import { Game, GameFormData } from '../../../types';
 
 interface GameModalProps {
   isOpen: boolean;

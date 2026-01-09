@@ -9,34 +9,27 @@ import {
   Text,
   Heading,
   useToast,
-  InputGroup,
-  InputRightElement,
-  Spinner,
   useDisclosure,
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogContent,
-  AlertDialogOverlay,
 } from '@chakra-ui/react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../../services/auth_service';
+import { SuccessAlert, ErrorAlert } from '../../components/alerts';
+import { PasswordInput } from '../../components/inputs';
+import { SubmitButton } from '../../components/buttons';
 
 const RegisterPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isErrorOpen, onOpen: onErrorOpen, onClose: onErrorClose } = useDisclosure();
-  const cancelRef = React.useRef(null);
-  const errorCancelRef = React.useRef(null);
+  const cancelRef = React.useRef<HTMLButtonElement>(null);
+  const errorCancelRef = React.useRef<HTMLButtonElement>(null);
 
   const handleRegister = async () => {
     if (!email || !password || !firstName) {
@@ -142,35 +135,17 @@ const RegisterPage: React.FC = () => {
               autoComplete="email"
             />
 
-            <InputGroup>
-              <Input
-                placeholder="Password"
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onKeyPress={handleKeyPress}
-                autoComplete="new-password"
-              />
-              <InputRightElement width="4.5rem">
-                <Button
-                  h="1.75rem"
-                  size="sm"
-                  onClick={() => setShowPassword(!showPassword)}
-                  variant="ghost"
-                >
-                  {showPassword ? 'Hide' : 'Show'}
-                </Button>
-              </InputRightElement>
-            </InputGroup>
+            <PasswordInput
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyPress={handleKeyPress}
+              autoComplete="new-password"
+            />
 
-            <Button
-              width="full"
-              colorScheme="brand"
-              onClick={handleRegister}
-              isDisabled={loading}
-            >
-              {loading ? <Spinner size="sm" /> : 'Create Account'}
-            </Button>
+            <SubmitButton loading={loading} onClick={handleRegister}>
+              Create Account
+            </SubmitButton>
           </VStack>
         </Box>
 
@@ -190,51 +165,20 @@ const RegisterPage: React.FC = () => {
         </HStack>
       </VStack>
 
-      <AlertDialog
+      <SuccessAlert
         isOpen={isOpen}
-        leastDestructiveRef={cancelRef}
         onClose={handleDialogClose}
-        isCentered
-      >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Registration Successful
-            </AlertDialogHeader>
-            <AlertDialogBody>
-              Your account has been created. Welcome to GameClub!
-            </AlertDialogBody>
-            <AlertDialogFooter>
-              <Button colorScheme="brand" onClick={handleDialogClose}>
-                OK
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
+        title="Registration Successful"
+        message="Your account has been created. Welcome to GameClub!"
+        cancelRef={cancelRef}
+      />
 
-      <AlertDialog
+      <ErrorAlert
         isOpen={isErrorOpen}
-        leastDestructiveRef={errorCancelRef}
         onClose={onErrorClose}
-        isCentered
-      >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold" color="red.600">
-              Error
-            </AlertDialogHeader>
-            <AlertDialogBody>
-              {errorMessage}
-            </AlertDialogBody>
-            <AlertDialogFooter>
-              <Button colorScheme="red" onClick={onErrorClose}>
-                OK
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
+        message={errorMessage}
+        cancelRef={errorCancelRef}
+      />
     </Container>
   );
 };

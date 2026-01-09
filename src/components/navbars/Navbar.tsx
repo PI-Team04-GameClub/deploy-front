@@ -1,37 +1,8 @@
 import React from 'react';
 import { Box, Flex, HStack, Text, Button } from '@chakra-ui/react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { authService } from '../services/auth_service';
-
-interface NavLinkProps {
-  to: string;
-  children: string;
-}
-
-const NavLink: React.FC<NavLinkProps> = ({ to, children }) => {
-  const location = useLocation();
-  const isActive = location.pathname === to;
-
-  return (
-    <Link to={to}>
-      <Text
-        px={4}
-        py={2}
-        borderRadius="md"
-        fontWeight="600"
-        fontSize="sm"
-        bg={isActive ? 'brand.500' : 'transparent'}
-        color={isActive ? 'white' : 'gray.700'}
-        _hover={{
-          bg: isActive ? 'brand.600' : 'gray.100',
-        }}
-        transition="all 0.2s"
-      >
-        {children}
-      </Text>
-    </Link>
-  );
-};
+import { useNavigate } from 'react-router-dom';
+import { authService } from '../../services/auth_service';
+import { NavLink } from '../links';
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
