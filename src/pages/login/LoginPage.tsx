@@ -58,13 +58,16 @@ const LoginPage: React.FC = () => {
       });
 
       navigate('/news');
-    } catch (error: any) {
+    } catch (error: unknown) {
       let message = 'Login failed';
 
-      if (error.response?.data?.error) {
-        message = error.response.data.error;
-      } else if (error.message) {
-        message = error.message;
+      if (error instanceof Error) {
+        const axiosError = error as { response?: { data?: { error?: string } } };
+        if (axiosError.response?.data?.error) {
+          message = axiosError.response.data.error;
+        } else {
+          message = error.message;
+        }
       }
 
       setErrorMessage(message);

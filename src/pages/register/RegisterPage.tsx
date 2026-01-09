@@ -66,13 +66,16 @@ const RegisterPage: React.FC = () => {
       });
 
       onOpen();
-    } catch (error: any) {
+    } catch (error: unknown) {
       let message = 'Registration failed';
 
-      if (error.response?.data?.error) {
-        message = error.response.data.error;
-      } else if (error.message) {
-        message = error.message;
+      if (error instanceof Error) {
+        const axiosError = error as { response?: { data?: { error?: string } } };
+        if (axiosError.response?.data?.error) {
+          message = axiosError.response.data.error;
+        } else {
+          message = error.message;
+        }
       }
 
       setErrorMessage(message);
