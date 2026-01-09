@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { LoginRequest, RegisterRequest, AuthResponse, User } from '../types';
 
 const API_BASE_URL = 'http://localhost:3000/api';
 
@@ -24,33 +25,6 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-export interface RegisterRequest {
-  first_name: string;
-  last_name: string;
-  email: string;
-  password: string;
-}
-
-export interface AuthResponse {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  token: string;
-}
-
-export interface User {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-}
 
 export const authService = {
   login: async (data: LoginRequest): Promise<AuthResponse> => {

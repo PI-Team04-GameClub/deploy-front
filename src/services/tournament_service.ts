@@ -1,24 +1,7 @@
 import axios from 'axios';
+import { Tournament, TournamentFormData } from '../types';
 
 const API_BASE_URL = 'http://localhost:3000/api';
-
-export interface Tournament {
-  id: number;
-  name: string;
-  game: string;
-  players: number;
-  prizePool: number;
-  startDate: string;
-  status: 'Active' | 'Upcoming' | 'Completed';
-}
-
-export interface TournamentFormData {
-  name: string;
-  gameId: number;
-  players: number;
-  prizePool: number;
-  startDate: string;
-}
 
 export const tournamentService = {
   getAll: async (): Promise<Tournament[]> => {
