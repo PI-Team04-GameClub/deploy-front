@@ -6,11 +6,11 @@ import {
   Heading,
   Text,
   HStack,
-  Button,
   Flex,
   Box,
 } from '@chakra-ui/react';
 import { NewsItem } from '../../types';
+import { ActionButtons } from '../buttons';
 
 interface NewsCardProps {
   news: NewsItem;
@@ -42,28 +42,10 @@ const NewsCard: React.FC<NewsCardProps> = ({ news, onEdit, onDelete }) => {
           
           {(onEdit || onDelete) && (
             <Box ml={4}>
-              <HStack spacing={2}>
-                {onEdit && (
-                  <Button
-                    size="sm"
-                    colorScheme="blue"
-                    variant="ghost"
-                    onClick={() => onEdit(news)}
-                  >
-                    Edit
-                  </Button>
-                )}
-                {onDelete && (
-                  <Button
-                    size="sm"
-                    colorScheme="red"
-                    variant="ghost"
-                    onClick={() => onDelete(news.id)}
-                  >
-                    Delete
-                  </Button>
-                )}
-              </HStack>
+              <ActionButtons
+                onEdit={onEdit ? () => onEdit(news) : undefined}
+                onDelete={onDelete ? () => onDelete(news.id) : undefined}
+              />
             </Box>
           )}
         </Flex>

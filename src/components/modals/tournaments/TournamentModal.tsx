@@ -147,21 +147,6 @@ export const TournamentModal: React.FC<TournamentModalProps> = ({
 
             <Box>
               <Text mb={2} fontWeight="600" fontSize="sm" color="gray.600">
-                Number of Players *
-              </Text>
-              <Input
-                type="number"
-                min="1"
-                placeholder="e.g., 16"
-                value={formData.players}
-                onChange={(e) =>
-                  setFormData({ ...formData, players: parseInt(e.target.value) || 0 })
-                }
-              />
-            </Box>
-
-            <Box>
-              <Text mb={2} fontWeight="600" fontSize="sm" color="gray.600">
                 Prize Pool *
               </Text>
               <Input

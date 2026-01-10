@@ -1,18 +1,7 @@
 import axios from 'axios';
+import { LoginRequest, RegisterRequest, AuthResponse, User } from '../types';
+import { API_BASE_URL } from '../config';
 
-const getApiUrl = (): string => {
-  if (typeof window !== 'undefined' && (window as any).API_URL) {
-    return (window as any).API_URL;
-  }
-  if (import.meta.env.VITE_API_URL) {
-    return import.meta.env.VITE_API_URL;
-  }
-  return 'http://localhost:3000/api';
-};
-
-const API_BASE_URL = getApiUrl();
-
-// Configure axios
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000,
@@ -21,7 +10,6 @@ const axiosInstance = axios.create({
   },
 });
 
-// Add interceptor for errors
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -30,37 +18,9 @@ axiosInstance.interceptors.response.use(
       console.error('Response data:', error.response.data);
       console.error('Response status:', error.response.status);
     }
-    // Proslijedi error dalje bez dodatnih promjena
     return Promise.reject(error);
   }
 );
-
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-export interface RegisterRequest {
-  first_name: string;
-  last_name: string;
-  email: string;
-  password: string;
-}
-
-export interface AuthResponse {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  token: string;
-}
-
-export interface User {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-}
 
 export const authService = {
   login: async (data: LoginRequest): Promise<AuthResponse> => {

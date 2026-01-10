@@ -1,17 +1,6 @@
 import axios from 'axios';
 import { NewsItem, NewsFormData } from '../types'
-
-const getApiUrl = (): string => {
-  if (typeof window !== 'undefined' && (window as any).API_URL) {
-    return (window as any).API_URL;
-  }
-  if (import.meta.env.VITE_API_URL) {
-    return import.meta.env.VITE_API_URL;
-  }
-  return 'http://localhost:3000/api';
-};
-
-const API_BASE_URL = getApiUrl();
+import { API_BASE_URL } from '../config';
 
 export const newsService = {
   getAll: async (): Promise<NewsItem[]> => {
