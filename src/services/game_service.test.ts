@@ -1,10 +1,21 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import axios from 'axios';
 import { gameService } from './game_service';
 
+// Create mock functions
+const mockGet = vi.fn();
+const mockPost = vi.fn();
+const mockPut = vi.fn();
+const mockDelete = vi.fn();
+
 // Mock axios
-vi.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+vi.mock('axios', () => ({
+  default: {
+    get: (...args: unknown[]) => mockGet(...args),
+    post: (...args: unknown[]) => mockPost(...args),
+    put: (...args: unknown[]) => mockPut(...args),
+    delete: (...args: unknown[]) => mockDelete(...args),
+  },
+}));
 
 describe('gameService', () => {
   beforeEach(() => {
@@ -17,19 +28,19 @@ describe('gameService', () => {
         { id: 1, name: 'Chess', description: 'Classic game', numberOfPlayers: 2 },
         { id: 2, name: 'Monopoly', description: 'Board game', numberOfPlayers: 4 },
       ];
-      mockedAxios.get.mockResolvedValueOnce({ data: mockGames });
+      mockGet.mockResolvedValueOnce({ data: mockGames });
 
       const result = await gameService.getAll();
       
       expect(result).toEqual(mockGames);
-      expect(mockedAxios.get).toHaveBeenCalledTimes(1);
+      expect(mockGet).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('getById', () => {
     it('returns single game from API', async () => {
       const mockGame = { id: 1, name: 'Chess', description: 'Classic', numberOfPlayers: 2 };
-      mockedAxios.get.mockResolvedValueOnce({ data: mockGame });
+      mockGet.mockResolvedValueOnce({ data: mockGame });
 
       const result = await gameService.getById(1);
       
@@ -41,7 +52,7 @@ describe('gameService', () => {
     it('creates game via API', async () => {
       const newGame = { name: 'New Game', description: 'Fun game', numberOfPlayers: 3 };
       const createdGame = { id: 3, ...newGame };
-      mockedAxios.post.mockResolvedValueOnce({ data: createdGame });
+      mockPost.mockResolvedValueOnce({ data: createdGame });
 
       const result = await gameService.create(newGame);
       
@@ -53,7 +64,7 @@ describe('gameService', () => {
     it('updates game via API', async () => {
       const updateData = { name: 'Updated Game', description: 'Updated', numberOfPlayers: 5 };
       const updatedGame = { id: 1, ...updateData };
-      mockedAxios.put.mockResolvedValueOnce({ data: updatedGame });
+      mockPut.mockResolvedValueOnce({ data: updatedGame });
 
       const result = await gameService.update(1, updateData);
       
@@ -63,11 +74,11 @@ describe('gameService', () => {
 
   describe('delete', () => {
     it('deletes game via API', async () => {
-      mockedAxios.delete.mockResolvedValueOnce({});
+      mockDelete.mockResolvedValueOnce({});
 
       await gameService.delete(1);
       
-      expect(mockedAxios.delete).toHaveBeenCalledTimes(1);
+      expect(mockDelete).toHaveBeenCalledTimes(1);
     });
   });
 });

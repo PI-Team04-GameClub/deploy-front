@@ -1,10 +1,21 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import axios from 'axios';
 import { newsService } from './news_service';
 
+// Create mock functions
+const mockGet = vi.fn();
+const mockPost = vi.fn();
+const mockPut = vi.fn();
+const mockDelete = vi.fn();
+
 // Mock axios
-vi.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+vi.mock('axios', () => ({
+  default: {
+    get: (...args: unknown[]) => mockGet(...args),
+    post: (...args: unknown[]) => mockPost(...args),
+    put: (...args: unknown[]) => mockPut(...args),
+    delete: (...args: unknown[]) => mockDelete(...args),
+  },
+}));
 
 describe('newsService', () => {
   beforeEach(() => {
@@ -17,12 +28,12 @@ describe('newsService', () => {
         { id: 1, title: 'News 1', description: 'Content 1', author: 'John', date: '2024-01-01' },
         { id: 2, title: 'News 2', description: 'Content 2', author: 'Jane', date: '2024-01-02' },
       ];
-      mockedAxios.get.mockResolvedValueOnce({ data: mockNews });
+      mockGet.mockResolvedValueOnce({ data: mockNews });
 
       const result = await newsService.getAll();
       
       expect(result).toEqual(mockNews);
-      expect(mockedAxios.get).toHaveBeenCalledTimes(1);
+      expect(mockGet).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -30,7 +41,7 @@ describe('newsService', () => {
     it('creates news via API', async () => {
       const newNews = { title: 'New Title', description: 'New Content', authorId: 1 };
       const createdNews = { id: 3, title: 'New Title', description: 'New Content', author: 'John', date: '2024-01-03' };
-      mockedAxios.post.mockResolvedValueOnce({ data: createdNews });
+      mockPost.mockResolvedValueOnce({ data: createdNews });
 
       const result = await newsService.create(newNews);
       
@@ -42,7 +53,7 @@ describe('newsService', () => {
     it('updates news via API', async () => {
       const updateData = { title: 'Updated Title', description: 'Updated', authorId: 1 };
       const updatedNews = { id: 1, title: 'Updated Title', description: 'Updated', author: 'John', date: '2024-01-01' };
-      mockedAxios.put.mockResolvedValueOnce({ data: updatedNews });
+      mockPut.mockResolvedValueOnce({ data: updatedNews });
 
       const result = await newsService.update(1, updateData);
       
@@ -52,11 +63,11 @@ describe('newsService', () => {
 
   describe('delete', () => {
     it('deletes news via API', async () => {
-      mockedAxios.delete.mockResolvedValueOnce({});
+      mockDelete.mockResolvedValueOnce({});
 
       await newsService.delete(1);
       
-      expect(mockedAxios.delete).toHaveBeenCalledTimes(1);
+      expect(mockDelete).toHaveBeenCalledTimes(1);
     });
   });
 });

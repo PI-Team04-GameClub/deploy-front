@@ -1,10 +1,21 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import axios from 'axios';
 import { tournamentService } from './tournament_service';
 
+// Create mock functions
+const mockGet = vi.fn();
+const mockPost = vi.fn();
+const mockPut = vi.fn();
+const mockDelete = vi.fn();
+
 // Mock axios
-vi.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+vi.mock('axios', () => ({
+  default: {
+    get: (...args: unknown[]) => mockGet(...args),
+    post: (...args: unknown[]) => mockPost(...args),
+    put: (...args: unknown[]) => mockPut(...args),
+    delete: (...args: unknown[]) => mockDelete(...args),
+  },
+}));
 
 describe('tournamentService', () => {
   beforeEach(() => {
@@ -17,19 +28,19 @@ describe('tournamentService', () => {
         { id: 1, name: 'Tournament 1', game: 'Chess', players: 8, prizePool: 1000, startDate: '2024-01-01', status: 'Active' as const },
         { id: 2, name: 'Tournament 2', game: 'Monopoly', players: 4, prizePool: 500, startDate: '2024-02-01', status: 'Upcoming' as const },
       ];
-      mockedAxios.get.mockResolvedValueOnce({ data: mockTournaments });
+      mockGet.mockResolvedValueOnce({ data: mockTournaments });
 
       const result = await tournamentService.getAll();
       
       expect(result).toEqual(mockTournaments);
-      expect(mockedAxios.get).toHaveBeenCalledTimes(1);
+      expect(mockGet).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('getById', () => {
     it('returns single tournament from API', async () => {
       const mockTournament = { id: 1, name: 'Tournament 1', game: 'Chess', players: 8, prizePool: 1000, startDate: '2024-01-01', status: 'Active' as const };
-      mockedAxios.get.mockResolvedValueOnce({ data: mockTournament });
+      mockGet.mockResolvedValueOnce({ data: mockTournament });
 
       const result = await tournamentService.getById(1);
       
@@ -41,7 +52,7 @@ describe('tournamentService', () => {
     it('creates tournament via API', async () => {
       const newTournament = { name: 'New Tournament', gameId: 1, players: 16, prizePool: 2000, startDate: '2024-03-01' };
       const createdTournament = { id: 3, name: 'New Tournament', game: 'Chess', players: 16, prizePool: 2000, startDate: '2024-03-01', status: 'Upcoming' as const };
-      mockedAxios.post.mockResolvedValueOnce({ data: createdTournament });
+      mockPost.mockResolvedValueOnce({ data: createdTournament });
 
       const result = await tournamentService.create(newTournament);
       
@@ -53,7 +64,7 @@ describe('tournamentService', () => {
     it('updates tournament via API', async () => {
       const updateData = { name: 'Updated Tournament', gameId: 1, players: 32, prizePool: 5000, startDate: '2024-04-01' };
       const updatedTournament = { id: 1, name: 'Updated Tournament', game: 'Chess', players: 32, prizePool: 5000, startDate: '2024-04-01', status: 'Upcoming' as const };
-      mockedAxios.put.mockResolvedValueOnce({ data: updatedTournament });
+      mockPut.mockResolvedValueOnce({ data: updatedTournament });
 
       const result = await tournamentService.update(1, updateData);
       
@@ -63,11 +74,11 @@ describe('tournamentService', () => {
 
   describe('delete', () => {
     it('deletes tournament via API', async () => {
-      mockedAxios.delete.mockResolvedValueOnce({});
+      mockDelete.mockResolvedValueOnce({});
 
       await tournamentService.delete(1);
       
-      expect(mockedAxios.delete).toHaveBeenCalledTimes(1);
+      expect(mockDelete).toHaveBeenCalledTimes(1);
     });
   });
 });
