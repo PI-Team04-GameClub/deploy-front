@@ -21,8 +21,8 @@ WORKDIR /app
 RUN npm install -g serve
 
 COPY --from=builder /app/dist ./dist
-COPY serve.json ./
+COPY serve.json ./dist/serve.json
 
 EXPOSE 3001
 
-CMD ["serve", "-s", "dist", "-l", "3001", "-c", "../serve.json"]
+CMD ["serve", "-s", "dist", "-l", "3001"]
