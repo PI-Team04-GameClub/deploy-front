@@ -13,16 +13,15 @@ RUN npm install
 COPY . .
 RUN echo "Building with VITE_API_URL=$VITE_API_URL" && npm run build
 
-# Serve stage
-FROM node:20-alpine
+# Production stage with nginx
+FROM nginx:alpine
 
-WORKDIR /app
+# Copy built assets
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-RUN npm install -g serve
-
-COPY --from=builder /app/dist ./dist
-COPY serve.json ./dist/serve.json
+# Copy nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 3001
 
-CMD ["serve", "-s", "dist", "-l", "3001"]
+CMD ["nginx", "-g", "daemon off;"]
