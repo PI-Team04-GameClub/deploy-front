@@ -3,5 +3,4 @@ builder = "dockerfile"
 buildArgs = ["VITE_API_URL"]
 
 [deploy]
-startCommand = "serve -s dist -l 3001"
 port = 3001
